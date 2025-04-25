@@ -1,23 +1,14 @@
-FROM python:3.10-slim
+FROM python:3.13-slim-bookworm
 
-# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Set work directory
-WORKDIR /app
+WORKDIR /code
 
-# Install dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    default-libmysqlclient-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Python dependencies
-COPY requirements.txt /app/
+COPY requirements.txt /code/
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project
-COPY . /app/
+COPY . /code/
 
 
+CMD ["gunicorn", "bookstore.wsgi:application", "--bind", "0.0.0.0:8000"]
