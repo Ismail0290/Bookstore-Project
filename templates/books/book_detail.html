@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ book.title }} - Bookstore{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        {% if book.cover_image %}
+        <img src="{{ book.cover_image.url }}" class="img-fluid rounded" alt="{{ book.title }}">
+        {% else %}
+        <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height: 400px;">
+            <i class="fas fa-book fa-5x text-secondary"></i>
+        </div>
+        {% endif %}
+    </div>
+    <div class="col-md-8">
+        <h1>{{ book.title }}</h1>
+        <p class="text-muted">By {{ book.author }}</p>
+        <p><strong>Category:</strong> {{ book.category.name }}</p>
+        <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+        <p><strong>Publication Date:</strong> {{ book.publication_date }}</p>
+        <p><strong>Price:</strong> <span class="text-primary fw-bold">${{ book.price }}</span></p>
+        <p><strong>Stock:</strong> {{ book.stock }}</p>
+        
+        <div class="mb-4">
+            <h4>Description</h4>
+            <p>{{ book.description }}</p>
+        </div>
+        
+        {% if book.is_in_stock %}
+        <form method="post" action="{% url 'cart:add_to_cart' book.id %}">
+            {% csrf_token %}
+            <div class="row g-3 align-items-center mb-3">
+                <div class="col-auto">
+                    <label for="quantity" class="col-form-label">Quantity:</label>
+                </div>
+                <div class="col-auto">
+                    <input type="number" id="quantity" name="quantity" class="form-control" value="1" min="1" max="{{ book.stock }}">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-cart-plus"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+        </form>
+        {% else %}
+        <div class="alert alert-danger">
+            This book is currently out of stock.
+        </div>
+        {% endif %}
+        
+        <a href="{% url 'books:book_list' %}" class="btn btn-secondary mt-3">
+            <i class="fas fa-arrow-left"></i> Back to Books
+        </a>
+    </div>
+</div>
+{% endblock %}

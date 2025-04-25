@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if book %}Edit Book{% else %}Add Book{% endif %} - Bookstore{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">{% if book %}Edit Book{% else %}Add Book{% endif %}</h1>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data" {% if book %}action="{% url 'admin_panel:book_update' book.id %}"{% else %}action="{% url 'admin_panel:book_create' %}"{% endif %}>
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" name="title" value="{{ book.title|default:'' }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="author" class="form-label">Author</label>
+                <input type="text" class="form-control" id="author" name="author" value="{{ book.author|default:'' }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="5" required>{{ book.description|default:'' }}</textarea>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="price" class="form-label">Price</label>
+                    <input type="number" class="form-control" id="price" name="price" value="{{ book.price|default:'' }}" step="0.01" min="0" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="stock" class="form-label">Stock</label>
+                    <input type="number" class="form-control" id="stock" name="stock" value="{{ book.stock|default:'' }}" min="0" required>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-select" id="category" name="category" required>
+                    <option value="">Select a category</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}" {% if book.category.id == category.id %}selected{% endif %}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="isbn" class="form-label">ISBN</label>
+                <input type="text" class="form-control" id="isbn" name="isbn" value="{{ book.isbn|default:'' }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="publication_date" class="form-label">Publication Date</label>
+                <input type="date" class="form-control" id="publication_date" name="publication_date" value="{{ book.publication_date|date:'Y-m-d'|default:'' }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="cover_image" class="form-label">Cover Image</label>
+                {% if book.cover_image %}
+                <div class="mb-2">
+                    <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" class="img-thumbnail" style="max-height: 200px;">
+                </div>
+                {% endif %}
+                <input type="file" class="form-control" id="cover_image" name="cover_image" accept="image/*">
+            </div>
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'admin_panel:book_list' %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

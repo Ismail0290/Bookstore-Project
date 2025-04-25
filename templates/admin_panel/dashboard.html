@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - Bookstore{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Admin Dashboard</h1>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Books</h5>
+                <p class="card-text display-4">{{ books_count }}</p>
+                <a href="{% url 'admin_panel:book_list' %}" class="btn btn-primary">Manage Books</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Categories</h5>
+                <p class="card-text display-4">{{ categories_count }}</p>
+                <a href="{% url 'admin_panel:category_list' %}" class="btn btn-primary">Manage Categories</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Orders</h5>
+                <p class="card-text display-4">{{ orders_count }}</p>
+                <a href="{% url 'admin_panel:order_list' %}" class="btn btn-primary">Manage Orders</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h4 class="card-title">Recent Orders</h4>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in recent_orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>{{ order.full_name }}</td>
+                        <td>{{ order.created_at|date:"M d, Y" }}</td>
+                        <td><span class="badge bg-{{ order.status }}">{{ order.get_status_display }}</span></td>
+                        <td>${{ order.total_price }}</td>
+                        <td>
+                            <a href="{% url 'admin_panel:order_detail' order.id %}" class="btn btn-sm btn-info">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">No orders yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

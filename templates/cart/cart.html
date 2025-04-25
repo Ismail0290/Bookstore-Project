@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Shopping Cart - Bookstore{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Shopping Cart</h1>
+
+{% if cart_items %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Book</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td>
+                    <div class="d-flex align-items-center">
+                        {% if item.book.cover_image %}
+                        <img src="{{ item.book.cover_image.url }}" alt="{{ item.book.title }}" class="img-thumbnail me-3" style="width: 50px;">
+                        {% else %}
+                        <div class="bg-light rounded d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                            <i class="fas fa-book text-secondary"></i>
+                        </div>
+                        {% endif %}
+                        <a href="{% url 'books:book_detail' item.book.id %}">{{ item.book.title }}</a>
+                    </div>
+                </td>
+                <td>${{ item.book.price }}</td>
+                <td>
+                    <form method="post" action="{% url 'cart:update_cart' item.book.id %}" class="d-flex align-items-center">
+                        {% csrf_token %}
+                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.book.stock }}" class="form-control form-control-sm" style="width: 70px;">
+                        <button type="submit" class="btn btn-sm btn-outline-primary ms-2">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </form>
+                </td>
+                <td>${{ item.price }}</td>
+                <td>
+                    <form method="post" action="{% url 'cart:remove_from_cart' item.book.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                <td><strong>${{ total_price }}</strong></td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div class="d-flex justify-content-between mt-4">
+    <a href="{% url 'books:book_list' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Continue Shopping
+    </a>
+    <a href="{% url 'cart:checkout' %}" class="btn btn-success">
+        <i class="fas fa-shopping-cart"></i> Proceed to Checkout
+    </a>
+</div>
+{% else %}
+<div class="alert alert-info">
+    Your cart is empty. <a href="{% url 'books:book_list' %}">Continue shopping</a>.
+</div>
+{% endif %}
+{% endblock %}

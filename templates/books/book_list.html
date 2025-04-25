@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Books - Bookstore{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Books</h1>
+
+<div class="row">
+    {% for book in books %}
+    <div class="col-md-3 mb-4">
+        <div class="card h-100">
+            {% if book.cover_image %}
+            <img src="{{ book.cover_image.url }}" class="card-img-top book-cover" alt="{{ book.title }}">
+            {% else %}
+            <div class="card-img-top book-cover bg-light d-flex align-items-center justify-content-center">
+                <i class="fas fa-book fa-3x text-secondary"></i>
+            </div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ book.title }}</h5>
+                <p class="card-text">By {{ book.author }}</p>
+                <p class="card-text text-primary fw-bold">${{ book.price }}</p>
+                <p class="card-text">
+                    {% if book.is_in_stock %}
+                    <span class="badge bg-success">In Stock</span>
+                    {% else %}
+                    <span class="badge bg-danger">Out of Stock</span>
+                    {% endif %}
+                </p>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'books:book_detail' book.id %}" class="btn btn-primary w-100">View Details</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">No books found.</div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
