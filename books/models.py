@@ -18,7 +18,7 @@ class Book(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.PositiveIntegerField(default=0)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='books')
-    # cover_image = models.ImageField(upload_to='covers/', blank=True, null=True)
+    cover_image = models.ImageField(upload_to='covers/', blank=True, null=True)
     isbn = models.CharField(max_length=13, unique=True)
     publication_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
