@@ -21,7 +21,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'docker-compose run --rm web python manage.py test'
+                sh 'docker-compose run --rm web python manage.py test books admin_panel accounts'
             }
         }
 
